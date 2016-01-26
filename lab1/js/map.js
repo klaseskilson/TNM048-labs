@@ -12,7 +12,7 @@ function map(){
 
     //initialize color scale
     //...
-    
+
     //initialize tooltip
     //...
 
@@ -31,24 +31,24 @@ function map(){
     g = svg.append("g");
 
     // load data and draw the map
-    d3.json("data/se.topojson", function(error, world) {
+    d3.json("data/world-topo.topojson", function(error, world) {
         console.log(world);
-        var countries = topojson.feature(world, world.objects.swe_mun).features;
-        
+        var countries = topojson.feature(world, world.objects.countries).features;
+
         //load summary data
         //...
 
         draw(countries);
-        
+
     });
 
     function draw(countries,data)
     {
         var country = g.selectAll(".country").data(countries);
 
-        //initialize a color country object	
+        //initialize a color country object
         var cc = {};
-		
+
         //...
 
         country.enter().insert("path")
@@ -71,19 +71,19 @@ function map(){
             });
 
     }
-    
+
     //zoom and panning method
     function move() {
 
         var t = d3.event.translate;
         var s = d3.event.scale;
-        
+
 
         zoom.translate(t);
         g.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")scale(" + s + ")");
 
     }
-    
+
     //method for selecting features of other components
     function selFeature(value){
         //...

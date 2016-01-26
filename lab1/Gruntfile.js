@@ -43,7 +43,7 @@ module.exports = function(grunt) {
           'node_modules/colorbrewer/colorbrewer.js',
           'node_modules/topojson/topojson.min.js',
           'node_modules/underscore/underscore-min.js',
-          'libs/**/*.js',
+          // 'libs/**/*.js',
         ],
         dest: 'dist/libs.js'
       },
