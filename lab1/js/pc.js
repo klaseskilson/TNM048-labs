@@ -8,16 +8,16 @@ function pc(){
         width = pcDiv.width() - margin[1] - margin[3],
         height = pcDiv.height() - margin[0] - margin[2];
 
-    
+
     //initialize color scale
     //...
-    
+
     //initialize tooltip
     //...
 
     var x = d3.scale.ordinal().rangePoints([0, width], 1),
         y = {};
-        
+
 
     var line = d3.svg.line(),
         axis = d3.svg.axis().orient("left"),
@@ -51,7 +51,7 @@ function pc(){
         background = svg.append("svg:g")
             .attr("class", "background")
             .selectAll("path")
-            //add the data and append the path 
+            //add the data and append the path
             //...
             .on("mousemove", function(d){})
             .on("mouseout", function(){});
@@ -60,7 +60,7 @@ function pc(){
         foreground = svg.append("svg:g")
             .attr("class", "foreground")
             .selectAll("path")
-            //add the data and append the path 
+            //add the data and append the path
             //...
             .on("mousemove", function(){})
             .on("mouseout", function(){});
@@ -71,7 +71,7 @@ function pc(){
             .enter().append("svg:g")
             .attr("class", "dimension")
             .attr("transform", function(d) { return "translate(" + x(d) + ")"; });
-            
+
         // Add an axis and title.
         g.append("svg:g")
             .attr("class", "axis")
@@ -106,14 +106,14 @@ function pc(){
         });
     }
 
-    //method for selecting the pololyne from other components	
+    //method for selecting the pololyne from other components
     this.selectLine = function(value){
         //...
     };
-    
+
     //method for selecting features of other components
     function selFeature(value){
         //...
-    };
+    }
 
 }
