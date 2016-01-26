@@ -72,6 +72,7 @@ function sp(){
             .attr("y", -6)
             // append title and move it
             .text(onXAxis)
+            .attr("text-anchor", "middle")
             .attr("x", width / 2);
 
         // Add y axis and title.
@@ -85,6 +86,7 @@ function sp(){
             .attr("dy", ".71em")
             // append title and move it
             .text(onYAxis)
+            .attr("text-anchor", "middle")
             // since it is rotated, change the x value and make it negative
             .attr("x", - height / 2);
 

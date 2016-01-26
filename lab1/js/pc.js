@@ -32,14 +32,15 @@ function pc(){
 
     //Load data
     d3.csv("data/OECD-better-life-index-hi.csv", function(data) {
-
         self.data = data;
 
-        // Extract the list of dimensions and create a scale for each.
-        //...
-        x.domain(dimensions = d3.keys([0,1,2,3,4]).filter(function(d) {
+        // Extract the list of self.dimensions and create a scale for each.
+        var keys = _(d3.keys(data[0])).without('Country');
+        x.domain(self.dimensions = keys.filter(function(d) {
+            var vals = _(self.data).pluck(d).map(parseFloat);
             return [(y[d] = d3.scale.linear()
-                .domain(d3.extent([0,1]))
+                // extract min/max values for this key
+                .domain(d3.extent(vals))
                 .range([height, 0]))];
         }));
 
@@ -52,7 +53,9 @@ function pc(){
             .attr("class", "background")
             .selectAll("path")
             //add the data and append the path
-            //...
+            .data(self.data)
+            .enter().append("path")
+            .attr("d", path)
             .on("mousemove", function(d){})
             .on("mouseout", function(){});
 
@@ -61,21 +64,27 @@ function pc(){
             .attr("class", "foreground")
             .selectAll("path")
             //add the data and append the path
-            //...
+            .data(self.data)
+            .enter().append("path")
+            .attr("d", path)
             .on("mousemove", function(){})
             .on("mouseout", function(){});
 
         // Add a group element for each dimension.
         var g = svg.selectAll(".dimension")
-            .data(dimensions)
+            .data(self.dimensions)
             .enter().append("svg:g")
             .attr("class", "dimension")
-            .attr("transform", function(d) { return "translate(" + x(d) + ")"; });
+            .attr("transform", function(d) {
+                return "translate(" + x(d) + ")";
+            });
 
         // Add an axis and title.
         g.append("svg:g")
             .attr("class", "axis")
-            //add scale
+            .each(function (d) {
+                d3.select(this).call(axis.scale(y[d]));
+            })
             .append("svg:text")
             .attr("text-anchor", "middle")
             .attr("y", -9)
@@ -84,7 +93,9 @@ function pc(){
         // Add and store a brush for each axis.
         g.append("svg:g")
             .attr("class", "brush")
-            .each(function(d) { d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brush", brush)); })
+            .each(function(d) {
+                d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brush", brush));
+            })
             .selectAll("rect")
             .attr("x", -8)
             .attr("width", 16);
@@ -92,12 +103,14 @@ function pc(){
 
     // Returns the path for a given data point.
     function path(d) {
-        return line(dimensions.map(function(p) { return [x(p), y[p](d[p])]; }));
+        return line(self.dimensions.map(function(p) {
+            return [x(p), y[p](d[p])];
+        }));
     }
 
     // Handles a brush event, toggling the display of foreground lines.
     function brush() {
-        var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
+        var actives = self.dimensions.filter(function(p) { return !y[p].brush.empty(); }),
             extents = actives.map(function(p) { return y[p].brush.extent(); });
         foreground.style("display", function(d) {
             return actives.every(function(p, i) {
