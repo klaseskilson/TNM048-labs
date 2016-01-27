@@ -67,8 +67,8 @@ function pc(){
             .data(self.data)
             .enter().append("path")
             .attr("d", path)
-            .attr("style", function (d) {
-                return "stroke: " + map.colors[d.Country];
+            .style({
+                stroke: map.colors
             })
             .on("mousemove", function(){})
             .on("mouseout", function(){});

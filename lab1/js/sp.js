@@ -106,8 +106,9 @@ function sp(){
                 return 5;
                 // return d[radius];
             })
-            .attr("style", function (d) {
-                return "fill: " + map.colors[d.Country];
+            .style({
+                fill: map.colors,
+                stroke: map.colors
             })
             //tooltip
             .on("mousemove", function(d) {
