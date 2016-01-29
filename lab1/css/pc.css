@@ -20,6 +20,11 @@ svg {
     stroke-width: 7px !important;
 }
 
+.foreground path.selected {
+    opacity: 1;
+    stroke-width: 7px !important;
+}
+
 .background path:hover{
     stroke-width: 7px !important;
 }

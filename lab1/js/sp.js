@@ -107,8 +107,7 @@ function sp(){
                 // return d[radius];
             })
             .style({
-                fill: map.colors,
-                stroke: map.colors
+                fill: map.colors
             })
             //tooltip
             .on("mousemove", function(d) {
@@ -117,14 +116,21 @@ function sp(){
             .on("mouseout", function(d) {
                 //...
             })
-            .on("click",  function(d) {
-                //...
+            .on("click", function(d) {
+                self.selectDot(d.Country);
+                pc1.selectLine(d.Country);
             });
     }
 
     //method for selecting the dot from other components
-    this.selectDot = function(value){
-        //...
+    this.selectDot = function (value) {
+        // find this dot and select it
+        svg.selectAll('.dot').each(function (d, i) {
+            if (d.Country === value) {
+                d3.select(this)
+                    .classed('selected', true);
+            }
+        });
     };
 
     //method for selecting features of other components

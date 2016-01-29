@@ -66,6 +66,10 @@ function pc(){
             //add the data and append the path
             .data(self.data)
             .enter().append("path")
+            .on("click", function (d) {
+                sp1.selectDot(d.Country);
+                self.selectLine(d.Country);
+            })
             .attr("d", path)
             .style({
                 stroke: map.colors
@@ -124,7 +128,13 @@ function pc(){
 
     //method for selecting the pololyne from other components
     this.selectLine = function(value){
-        //...
+        foreground.each(function (d, i) {
+            var path = this;
+            if (d.Country === value) {
+                d3.select(path)
+                    .classed('selected', true);
+            }
+        });
     };
 
     //method for selecting features of other components

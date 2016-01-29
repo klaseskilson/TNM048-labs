@@ -32,5 +32,9 @@ text {
 
 .dot {
     stroke: #000;
-    cursor:pointer;
+    cursor: pointer;
+}
+
+.dot.selected {
+    stroke-width: 3px;
 }
