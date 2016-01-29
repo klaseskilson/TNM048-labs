@@ -133,6 +133,13 @@ function sp(){
         });
     };
 
+    this.fadeDots = function (selected) {
+        svg.selectAll('.dot').each(function (d, i) {
+            d3.select(this)
+                .classed('faded', selected.indexOf(d.Country) === -1);
+        });
+    };
+
     //method for selecting features of other components
     function selFeature(value){
         //...

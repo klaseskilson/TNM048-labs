@@ -116,14 +116,21 @@ function pc(){
     }
 
     // Handles a brush event, toggling the display of foreground lines.
-    function brush() {
-        var actives = self.dimensions.filter(function(p) { return !y[p].brush.empty(); }),
-            extents = actives.map(function(p) { return y[p].brush.extent(); });
+    function brush () {
+        var actives = self.dimensions.filter(function (p) { return !y[p].brush.empty(); }),
+            extents = actives.map(function (p) { return y[p].brush.extent(); });
+        var selected = [];
         foreground.style("display", function(d) {
-            return actives.every(function(p, i) {
+            var within = actives.every(function(p, i) {
                 return extents[i][0] <= d[p] && d[p] <= extents[i][1];
-            }) ? null : "none";
+            });
+            if (within) {
+                selected.push(d.Country);
+                return null;
+            }
+            return "none";
         });
+        sp1.fadeDots(selected);
     }
 
     //method for selecting the pololyne from other components

@@ -38,3 +38,6 @@ text {
 .dot.selected {
     stroke-width: 3px;
 }
+.dot.faded {
+    opacity: .1;
+}
