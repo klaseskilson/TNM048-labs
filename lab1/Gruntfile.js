@@ -28,6 +28,10 @@ module.exports = function(grunt) {
       }
     },
     jshint: {
+      options: {
+        // dont fail task on warnings
+        force: true
+      },
       file: ['js/**/*.js']
     },
     concat: {
