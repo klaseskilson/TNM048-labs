@@ -127,8 +127,8 @@ function sp(){
         // find this dot and select it
         svg.selectAll('.dot').each(function (d, i) {
             if (d.Country === value) {
-                d3.select(this)
-                    .classed('selected', true);
+                var dot = d3.select(this);
+                dot.classed('selected', !dot.classed('selected'));
             }
         });
     };

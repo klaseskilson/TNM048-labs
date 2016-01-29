@@ -129,10 +129,9 @@ function pc(){
     //method for selecting the pololyne from other components
     this.selectLine = function(value){
         foreground.each(function (d, i) {
-            var path = this;
             if (d.Country === value) {
-                d3.select(path)
-                    .classed('selected', true);
+                var path = d3.select(this);
+                path.classed('selected', !path.classed('selected'));
             }
         });
     };
