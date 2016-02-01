@@ -31,8 +31,8 @@ function map(){
         return colors[d.Country];
     };
 
-    //initialize tooltip
-    //...
+    var tooltip = d3.select("body").append("div")
+        .classed("tt", true);
 
     var projection = d3.geo.mercator()
         .center([50, 60])
@@ -76,11 +76,22 @@ function map(){
                 }
             })
             //tooltip
-            .on("mousemove", function(d) {
-                //...
+            .on("mousemove", function (d) {
+                tooltip
+                    .html(d.properties.name)
+                    .transition()
+                    .duration(100)
+                    .style({
+                        "left": d3.event.pageX + 10 + "px",
+                        "top": d3.event.pageY + "px",
+                        "opacity": 0.9
+                    });
             })
-            .on("mouseout",  function(d) {
-                //...
+            .on("mouseout", function () {
+                tooltip
+                    .transition()
+                    .duration(100)
+                    .style("opacity", 0);
             })
             //selection
             .on("click",  function(d) {

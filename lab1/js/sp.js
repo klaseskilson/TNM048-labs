@@ -8,11 +8,9 @@ function sp(){
         width = spDiv.width() - margin.right - margin.left,
         height = spDiv.height() - margin.top - margin.bottom;
 
-    //initialize color scale
-    //...
-
     //initialize tooltip
-    //...
+    var tooltip = d3.select("body").append("div")
+        .classed("tt", true);
 
     var x = d3.scale.linear()
         .range([0, width]);
@@ -110,11 +108,22 @@ function sp(){
                 fill: map.colors
             })
             //tooltip
-            .on("mousemove", function(d) {
-                //...
+            .on("mousemove", function (d) {
+                tooltip
+                    .html(d.Country)
+                    .transition()
+                    .duration(100)
+                    .style({
+                        "left": d3.event.pageX + 10 + "px",
+                        "top": d3.event.pageY + "px",
+                        "opacity": 0.9
+                    });
             })
-            .on("mouseout", function(d) {
-                //...
+            .on("mouseout", function () {
+                tooltip
+                    .transition()
+                    .duration(100)
+                    .style("opacity", 0);
             })
             .on("click", function(d) {
                 self.selectDot(d.Country);

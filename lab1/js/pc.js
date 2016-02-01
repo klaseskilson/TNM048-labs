@@ -6,14 +6,8 @@ function pc(){
 
     var margin = [30, 10, 10, 10],
         width = pcDiv.width() - margin[1] - margin[3],
-        height = pcDiv.height() - margin[0] - margin[2];
-
-
-    //initialize color scale
-    //...
-
-    //initialize tooltip
-    //...
+        height = pcDiv.height() - margin[0] - margin[2],
+        position = pcDiv.offset();
 
     var x = d3.scale.ordinal().rangePoints([0, width], 1),
         y = {};
@@ -29,6 +23,10 @@ function pc(){
         .attr("height", height + margin[0] + margin[2])
         .append("svg:g")
         .attr("transform", "translate(" + margin[3] + "," + margin[0] + ")");
+
+    // initialize tooltip
+    var tooltip = d3.select("body").append("div")
+        .classed("tt", true);
 
     //Load data
     d3.csv("data/OECD-better-life-index-hi.csv", function(data) {
@@ -75,8 +73,23 @@ function pc(){
             .style({
                 stroke: map.colors
             })
-            .on("mousemove", function(){})
-            .on("mouseout", function(){});
+            .on("mousemove", function (d) {
+                tooltip
+                    .html(d.Country)
+                    .transition()
+                    .duration(100)
+                    .style({
+                        "left": d3.event.pageX + 10 + "px",
+                        "top": d3.event.pageY + "px",
+                        "opacity": 0.9
+                    });
+            })
+            .on("mouseout", function () {
+                tooltip
+                    .transition()
+                    .duration(100)
+                    .style("opacity", 0);
+            });
 
         // Add a group element for each dimension.
         var g = svg.selectAll(".dimension")
