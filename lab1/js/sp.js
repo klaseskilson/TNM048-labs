@@ -119,6 +119,7 @@ function sp(){
             .on("click", function(d) {
                 self.selectDot(d.Country);
                 pc1.selectLine(d.Country);
+                map.selectCountry(d.Country);
             });
     }
 

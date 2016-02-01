@@ -69,6 +69,7 @@ function pc(){
             .on("click", function (d) {
                 sp1.selectDot(d.Country);
                 self.selectLine(d.Country);
+                map.selectCountry(d.Country);
             })
             .attr("d", path)
             .style({

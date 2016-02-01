@@ -60,14 +60,9 @@ function map(){
 
     });
 
-    function draw(countries,data)
+    function draw(countries, data)
     {
         var country = g.selectAll(".country").data(countries);
-
-        //initialize a color country object
-        var cc = {};
-
-        //...
 
         country.enter().insert("path")
             .attr("class", "country")
@@ -89,7 +84,9 @@ function map(){
             })
             //selection
             .on("click",  function(d) {
-                //...
+                pc1.selectLine(d.properties.name);
+                sp1.selectDot(d.properties.name);
+                self.selectCountry(d.properties.name);
             });
 
     }
@@ -110,5 +107,18 @@ function map(){
     function selFeature(value){
         //...
     }
-}
 
+    this.selectCountry = function (selected) {
+        g.selectAll(".country").each(function (d) {
+            if (d.properties.name === selected) {
+                var country = this;
+                var isSelected = d.selected = !d.selected;
+                d3.select(country)
+                    .style({
+                        'stroke-width': isSelected ? '1px' : null,
+                        'stroke': isSelected ? '#000' : null,
+                    });
+            }
+        });
+    };
+}
