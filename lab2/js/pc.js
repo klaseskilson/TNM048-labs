@@ -23,22 +23,18 @@ function pc(){
         .append("svg:g")
         .attr("transform", "translate(" + margin[3] + "," + margin[0] + ")");
 
-    d3.csv("data/testData2_400x3_2-clusters.csv", function(data) {
+    d3.csv("data/testData2_5600x5_x-clusters.csv", function(data) {
         // Extract the list of dimensions and create a scale for each.
         x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
             return (y[d] = d3.scale.linear()
                 .domain(d3.extent(data, function(p) { return +p[d]; }))
-
-                //assign the the axis scale  between [0 1]
-                //...
-
                 .range([height, 0])
                 );
         }));
 
         self.data = data;
 
-        var k = 3;
+        var k = 4;
         var kmeansRes = kmeans(data,k);
 
         self.color = d3.scale.category20()
@@ -65,10 +61,6 @@ function pc(){
             .enter().append("svg:path")
             .attr("d", path)
             .style("stroke", function(d) { return self.color(d._cluster); });
-
-            //Assign the cluster colors
-            //..
-
 
         // Add a group element for each dimension.
         var g = svg.selectAll(".dimension")
