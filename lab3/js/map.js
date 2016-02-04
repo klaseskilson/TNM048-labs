@@ -57,7 +57,14 @@ function map(data) {
     function geoFormat(array) {
         var data = [];
         array.map(function (d, i) {
-            //Complete the code
+            data.push({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [(d.lon), (d.lat)]
+                },
+                properties: _.clone(d),
+            });
         });
         return data;
     }
@@ -67,14 +74,16 @@ function map(data) {
         //draw map
         var country = g.selectAll(".country").data(countries);
         country.enter().insert("path")
-                .attr("class", "country")
-                .attr("d", path)
-                .style('stroke-width', 1)
-                .style("fill", "lightgray")
-                .style("stroke", "white");
+            .attr("class", "country")
+            .attr("d", path)
+            .style('stroke-width', 1)
+            .style("fill", "lightgray")
+            .style("stroke", "white");
 
         //draw point
-        var point; //Complete the code
+        var point = g.append("path")
+            .datum(geoData)
+            .attr("d", d3.geo.path().projection(projection));
     }
 
     //Filters data points according to the specified magnitude
@@ -94,7 +103,6 @@ function map(data) {
 
     //Zoom and panning method
     function move() {
-
         var t = d3.event.translate;
         var s = d3.event.scale;
 
