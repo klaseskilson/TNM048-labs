@@ -5,17 +5,6 @@
  * @return {Object}
  */
 function kmeans(data, k) {
-  // find min and max for data values
-  // var minMax = {};
-  // _(data[0]).keys().forEach(function(d) {
-  //   var vals = _(data).pluck(d);
-  //   var min = _(vals).min(),
-  //       max = _(vals).max();
-  //   minMax[d] = {
-  //     min: min,
-  //     max: max,
-  //   };
-  // });
   // set initial clustering position
   var clusters = [], indices = [];
   for (var i = 0; i < k; ++i) {
@@ -101,16 +90,15 @@ function kmeans(data, k) {
 
   // reasign cluster until it no longer gets any better
   while (newError < oldError) {
-    // console.log(oldError, newError, newError < oldError);
     oldError = newError;
     oldData = _.map(data, _.clone);
     oldClusters = _.map(clusters, _.clone);
     assignCluster();
     moveCentroids();
     newError = calculateError();
+    console.log('Reassignment', attempts, 'Old:', oldError, 'New:', newError);
     ++attempts;
   }
-  console.log(attempts, 'reassignments. Error got worse! Old:', oldError, 'New:', newError);
   // restore old values
   clusters = oldClusters;
   data = oldData;
