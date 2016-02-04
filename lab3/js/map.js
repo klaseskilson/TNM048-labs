@@ -36,7 +36,7 @@ function map(data) {
             .center([8.25, 56.8])
             .scale(700);
 
-    //Creates a new geographic path generator and assing the projection        
+    //Creates a new geographic path generator and assing the projection
     var path = d3.geo.path().projection(projection);
 
     //Formats the data in a feature collection trougth geoFormat()
@@ -48,7 +48,7 @@ function map(data) {
         draw(countries);
     });
 
-    //Calls the filtering function 
+    //Calls the filtering function
     d3.select("#slider").on("input", function () {
         filterMag(this.value, data);
     });
@@ -63,8 +63,7 @@ function map(data) {
     }
 
     //Draws the map and the points
-    function draw(countries)
-    {
+    function draw (countries) {
         //draw map
         var country = g.selectAll(".country").data(countries);
         country.enter().insert("path")
@@ -74,21 +73,21 @@ function map(data) {
                 .style("fill", "lightgray")
                 .style("stroke", "white");
 
-        //draw point        
-        var point //Complete the code
-    };
+        //draw point
+        var point; //Complete the code
+    }
 
     //Filters data points according to the specified magnitude
     function filterMag(value) {
         //Complete the code
     }
-    
+
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
         //Complete the code
     };
 
-    //Calls k-means function and changes the color of the points  
+    //Calls k-means function and changes the color of the points
     this.cluster = function () {
         //Complete the code
     };
@@ -106,7 +105,7 @@ function map(data) {
     //Prints features attributes
     function printInfo(value) {
         var elem = document.getElementById('info');
-        elem.innerHTML = "Place: " + value["place"] + " / Depth: " + value["depth"] + " / Magnitude: " + value["mag"] + "&nbsp;";
+        elem.innerHTML = "Place: " + value.place + " / Depth: " + value.depth + " / Magnitude: " + value.mag + "&nbsp;";
     }
 
 }
