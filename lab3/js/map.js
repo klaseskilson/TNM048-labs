@@ -53,6 +53,12 @@ function map(data) {
         filterMag(this.value, data);
     });
 
+    // filter functions that should return true if given datum is within range
+    var filters = {
+        magnitude: function () { return true; },
+        time: function () { return true; }
+    };
+
     //Formats the data in a feature collection
     function geoFormat(array) {
         var data = [];
@@ -61,7 +67,7 @@ function map(data) {
                 type: 'Feature',
                 geometry: {
                     type: 'Point',
-                    coordinates: [(d.lon), (d.lat)]
+                    coordinates: [d.lon, d.lat]
                 },
                 properties: _.clone(d),
             });
@@ -72,8 +78,8 @@ function map(data) {
     //Draws the map and the points
     function draw (countries) {
         //draw map
-        var country = g.selectAll(".country").data(countries);
-        country.enter().insert("path")
+        var country = g.selectAll(".country").data(countries)
+            .enter().insert("path")
             .attr("class", "country")
             .attr("d", path)
             .style('stroke-width', 1)
@@ -81,19 +87,36 @@ function map(data) {
             .style("stroke", "white");
 
         //draw point
-        var point = g.append("path")
-            .datum(geoData)
-            .attr("d", d3.geo.path().projection(projection));
+        var point = g.selectAll("path")
+            .data(geoData.features)
+            .enter().append("path")
+            .classed("point", true)
+            .attr("d", path);
     }
 
     //Filters data points according to the specified magnitude
     function filterMag(value) {
-        //Complete the code
+        $('#slider-value').text(value);
+        filters.magnitude = function (d) {
+            return parseFloat(d.properties.mag) >= parseFloat(value);
+        };
+        g.selectAll('.point').each(function (d) {
+            var point = d3.select(this);
+            point.classed('hidden', !filters.magnitude(d) || !filters.time(d));
+        });
     }
 
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
-        //Complete the code
+        filters.time = function (d) {
+            var time = format.parse(d.properties.time);
+            return time > value[0] && time < value[1];
+        };
+        g.selectAll('.point').each(function (d) {
+            var point = d3.select(this);
+            // console.log(!filters.magnitude(d) && !filters.time(d), !!filters.magnitude(d), !filters.time(d));
+            point.classed('hidden', !filters.magnitude(d) || !filters.time(d));
+        });
     };
 
     //Calls k-means function and changes the color of the points
