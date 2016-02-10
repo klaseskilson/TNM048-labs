@@ -21,7 +21,7 @@ function map(data) {
     var filterdData = data;
 
     //Sets the colormap
-    var colors = colorbrewer.Set3[10];
+    var colors = d3.scale.category20().domain(0, 4);
 
     //Assings the svg canvas to the map div
     var svg = d3.select("#map").append("svg")
@@ -114,14 +114,18 @@ function map(data) {
         };
         g.selectAll('.point').each(function (d) {
             var point = d3.select(this);
-            // console.log(!filters.magnitude(d) && !filters.time(d), !!filters.magnitude(d), !filters.time(d));
             point.classed('hidden', !filters.magnitude(d) || !filters.time(d));
         });
     };
 
     //Calls k-means function and changes the color of the points
     this.cluster = function () {
-        //Complete the code
+        var k = $('#k').val();
+        colors.domain(0, k);
+        cluster = kmeans(data, k, k * 10);
+        g.selectAll('.point').each(function (d, i) {
+            d3.select(this).style("fill", colors(cluster[i]));
+        });
     };
 
     //Zoom and panning method

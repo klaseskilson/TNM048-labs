@@ -2,9 +2,11 @@
  * k means algorithm
  * @param data    - the data to analyse
  * @param k       - number of clusters
- * @return {Object}
+ * @return {array} an array containing the cluster of each data entry
  */
-function kmeans(data, k) {
+function kmeans(data, k, maxAttempts) {
+  maxAttempts = maxAttempts || Infinity;
+  console.time('clusterTime');
   // set initial clustering position
   var clusters = [], indices = [];
   for (var i = 0; i < k; ++i) {
@@ -20,7 +22,7 @@ function kmeans(data, k) {
 
   // assign cluster
   var assignCluster = function () {
-    console.info('Assigning clusters...');
+    // console.info('Assigning clusters...');
     _(data).map(function (d) {
       var nearestValue = Infinity,
           nearestIndex = -1;
@@ -36,13 +38,13 @@ function kmeans(data, k) {
       d.cluster = nearestIndex;
       return d;
     });
-    console.info('... done!');
+    // console.info('... done!');
   };
   assignCluster();
 
   // move cluster centroids
   var moveCentroids = function () {
-    console.info('Moving centroids...');
+    // console.info('Moving centroids...');
     _.chain(data)
       .groupBy('cluster')
       .forEach(function(group, cluster) {
@@ -61,7 +63,7 @@ function kmeans(data, k) {
           // console.log(cluster, key, groupSize, sum, sum / groupSize);
         });
       });
-    console.info('... done!');
+    // console.info('... done!');
   };
   moveCentroids();
 
@@ -89,7 +91,7 @@ function kmeans(data, k) {
       attempts = 0;
 
   // reasign cluster until it no longer gets any better
-  while (newError < oldError) {
+  while (newError < oldError && attempts < maxAttempts) {
     oldError = newError;
     oldData = _.map(data, _.clone);
     oldClusters = _.map(clusters, _.clone);
@@ -104,7 +106,9 @@ function kmeans(data, k) {
   data = oldData;
   console.log('Restored old clusters!');
 
-  return data;
+  var doneClusters = _.pluck(data, 'cluster');
+  console.timeEnd('clusterTime');
+  return doneClusters;
 }
 
 /**
