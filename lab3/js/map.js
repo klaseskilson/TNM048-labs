@@ -108,10 +108,16 @@ function map(data) {
 
     //Filters data points according to the specified time window
     this.filterTime = function (value) {
-        filters.time = function (d) {
-            var time = format.parse(d.properties.time);
-            return time > value[0] && time < value[1];
-        };
+        if (value[0].getTime() === value[1].getTime()) {
+            filters.time = function () {
+                return true;
+            };
+        } else {
+            filters.time = function (d) {
+                var time = format.parse(d.properties.time);
+                return time > value[0] && time < value[1];
+            };
+        }
         g.selectAll('.point').each(function (d) {
             var point = d3.select(this);
             point.classed('hidden', !filters.magnitude(d) || !filters.time(d));
