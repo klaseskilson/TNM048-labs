@@ -41,6 +41,22 @@ function map(data) {
     //Formats the data in a feature collection trougth geoFormat()
     var geoData = { type: "FeatureCollection", features: geoFormat(data) };
 
+    //Formats the data in a feature collection
+    function geoFormat(array) {
+        var tempData = [];
+        array.map(function (d, i) {
+            tempData.push({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [d.lon, d.lat]
+                },
+                properties: d,
+            });
+        });
+        return tempData;
+    }
+
     //Loads geo data
     d3.json("data/world-topo.json", function (error, world) {
         var countries = topojson.feature(world, world.objects.countries).features;
@@ -68,23 +84,7 @@ function map(data) {
         }
     };
     // the filtered data
-    var filterdData = data;
-
-    //Formats the data in a feature collection
-    function geoFormat(array) {
-        var data = [];
-        array.map(function (d, i) {
-            data.push({
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [d.lon, d.lat]
-                },
-                properties: d,
-            });
-        });
-        return data;
-    }
+    var filteredData = geoData.features;
 
     //Draws the map and the points
     function draw (countries) {
@@ -138,11 +138,13 @@ function map(data) {
             entry.cluster = null;
             return entry;
         });
-        var cluster = kmeans(filteredData, k, k * 10);
-        // assign new colors
-        points.each(function (d) {
-            d3.select(this).style("fill", colors(d.properties.cluster));
-        });
+        setTimeout(function () {
+            var cluster = kmeans(filteredData, k, k * 10);
+            // assign new colors
+            points.each(function (d) {
+                d3.select(this).style("fill", colors(d.properties.cluster));
+            });
+        }, 0);
     };
 
     //Zoom and panning method

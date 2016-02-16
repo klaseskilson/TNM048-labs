@@ -135,8 +135,9 @@ function distance(a, b) {
  * @return {[type]}   [description]
  */
 function squaredDiffSum(a, b) {
-  var valA = _.values(a).map(parseFloat),
-      valB = _.values(b).map(parseFloat);
+  var goodKeys = ['lat', 'lon', 'depth', 'mag'];
+  var valA = _.chain(a).pick(goodKeys).values().map(parseFloat).value(),
+      valB = _.chain(b).pick(goodKeys).values().map(parseFloat).value();
   var num = Math.max(valA.length, valB.length),
       tot = 0;
   for (var i = 0; i < num; ++i) {
