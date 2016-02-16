@@ -23,10 +23,10 @@ function kmeans(data, k, maxAttempts) {
   // assign cluster
   var assignCluster = function () {
     // console.info('Assigning clusters...');
-    _(data).map(function (d) {
+    _(data).map(function eachData(d) {
       var nearestValue = Infinity,
           nearestIndex = -1;
-      _(clusters).forEach(function(c, i) {
+      _(clusters).forEach(function eachCluster(c, i) {
         // calculate distance for each cluster
         var dist = distance(c, d);
         if (dist < nearestValue) {
@@ -135,13 +135,13 @@ function distance(a, b) {
  * @return {[type]}   [description]
  */
 function squaredDiffSum(a, b) {
-  var valA = _.values(a),
-      valB = _.values(b);
+  var valA = _.values(a).map(parseFloat),
+      valB = _.values(b).map(parseFloat);
   var num = Math.max(valA.length, valB.length),
       tot = 0;
   for (var i = 0; i < num; ++i) {
-    var p = parseFloat(valA[i]) || 0,
-        q = parseFloat(valB[i]) || 0;
+    var p = valA[i] || 0,
+        q = valB[i] || 0;
     tot += Math.pow(p - q, 2);
   }
   return tot;
