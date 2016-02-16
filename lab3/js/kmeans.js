@@ -8,22 +8,22 @@ function kmeans(data, k, maxAttempts) {
   maxAttempts = maxAttempts || Infinity;
   console.time('clusterTime');
   // set initial clustering position
-  var clusters = [], indices = [];
+  var clusters = [], indices = [], selectedData = _(data).pluck('properties');
   for (var i = 0; i < k; ++i) {
-    var pos = random(0, data.length);
+    var pos = random(0, selectedData.length);
     // make sure clusters are unique
     while (indices.indexOf(pos) !== -1) {
-      pos = random(0, data.length);
+      pos = random(0, selectedData.length);
     }
-    // console.log(pos, data[pos]);
+    // console.log(pos, selectedData[pos]);
     indices.push(pos);
-    clusters.push(_.clone(data[pos]));
+    clusters.push(_.clone(selectedData[pos]));
   }
 
   // assign cluster
   var assignCluster = function () {
     // console.info('Assigning clusters...');
-    _(data).map(function eachData(d) {
+    _(selectedData).map(function eachData(d) {
       var nearestValue = Infinity,
           nearestIndex = -1;
       _(clusters).forEach(function eachCluster(c, i) {
@@ -45,7 +45,7 @@ function kmeans(data, k, maxAttempts) {
   // move cluster centroids
   var moveCentroids = function () {
     // console.info('Moving centroids...');
-    _.chain(data)
+    _.chain(selectedData)
       .groupBy('cluster')
       .forEach(function(group, cluster) {
         // console.log(cluster, group);
@@ -71,7 +71,7 @@ function kmeans(data, k, maxAttempts) {
   var calculateError = function () {
     var totalError = 0;
 
-    _.chain(data)
+    _.chain(selectedData)
       .groupBy('cluster')
       .forEach(function(group, cluster) {
         var clusterError = 0;
@@ -93,7 +93,7 @@ function kmeans(data, k, maxAttempts) {
   // reasign cluster until it no longer gets any better
   while (newError < oldError && attempts < maxAttempts) {
     oldError = newError;
-    oldData = _.map(data, _.clone);
+    oldData = _.map(selectedData, _.clone);
     oldClusters = _.map(clusters, _.clone);
     assignCluster();
     moveCentroids();
@@ -103,10 +103,10 @@ function kmeans(data, k, maxAttempts) {
   }
   // restore old values
   clusters = oldClusters;
-  data = oldData;
+  selectedData = oldData;
   console.log('Restored old clusters!');
 
-  var doneClusters = _.pluck(data, 'cluster');
+  var doneClusters = _.pluck(selectedData, 'cluster');
   console.timeEnd('clusterTime');
   return doneClusters;
 }

@@ -18,8 +18,6 @@ function map(data) {
         return format.parse(d.time);
     }));
 
-    var filterdData = data;
-
     //Sets the colormap
     var colors = d3.scale.category20().domain(0, 4);
 
@@ -30,6 +28,7 @@ function map(data) {
             .call(zoom);
 
     var g = svg.append("g");
+    var points;
 
     //Sets the map projection
     var projection = d3.geo.mercator()
@@ -40,7 +39,7 @@ function map(data) {
     var path = d3.geo.path().projection(projection);
 
     //Formats the data in a feature collection trougth geoFormat()
-    var geoData = {type: "FeatureCollection", features: geoFormat(data)};
+    var geoData = { type: "FeatureCollection", features: geoFormat(data) };
 
     //Loads geo data
     d3.json("data/world-topo.json", function (error, world) {
@@ -56,8 +55,20 @@ function map(data) {
     // filter functions that should return true if given datum is within range
     var filters = {
         magnitude: function () { return true; },
-        time: function () { return true; }
+        time: function () { return true; },
+        filter: function () {
+            filteredData = [];
+            points.each(function (d) {
+                var hide = !filters.magnitude(d) || !filters.time(d);
+                d3.select(this).classed('hidden', hide);
+                if (!hide) {
+                    filteredData.push(d);
+                }
+            });
+        }
     };
+    // the filtered data
+    var filterdData = data;
 
     //Formats the data in a feature collection
     function geoFormat(array) {
@@ -69,7 +80,7 @@ function map(data) {
                     type: 'Point',
                     coordinates: [d.lon, d.lat]
                 },
-                properties: _.clone(d),
+                properties: d,
             });
         });
         return data;
@@ -87,7 +98,7 @@ function map(data) {
             .style("stroke", "white");
 
         //draw point
-        var point = g.selectAll("path")
+        points = g.selectAll("path")
             .data(geoData.features)
             .enter().append("path")
             .classed("point", true)
@@ -100,10 +111,7 @@ function map(data) {
         filters.magnitude = function (d) {
             return parseFloat(d.properties.mag) >= parseFloat(value);
         };
-        g.selectAll('.point').each(function (d) {
-            var point = d3.select(this);
-            point.classed('hidden', !filters.magnitude(d) || !filters.time(d));
-        });
+        filters.filter();
     }
 
     //Filters data points according to the specified time window
@@ -118,19 +126,22 @@ function map(data) {
                 return time > value[0] && time < value[1];
             };
         }
-        g.selectAll('.point').each(function (d) {
-            var point = d3.select(this);
-            point.classed('hidden', !filters.magnitude(d) || !filters.time(d));
-        });
+        filters.filter();
     };
 
     //Calls k-means function and changes the color of the points
     this.cluster = function () {
         var k = $('#k').val();
         colors.domain(0, k);
-        cluster = kmeans(data, k, k * 10);
-        g.selectAll('.point').each(function (d, i) {
-            d3.select(this).style("fill", colors(cluster[i]));
+        // reset colors
+        _(data).map(function (entry) {
+            entry.cluster = null;
+            return entry;
+        });
+        var cluster = kmeans(filteredData, k, k * 10);
+        // assign new colors
+        points.each(function (d) {
+            d3.select(this).style("fill", colors(d.properties.cluster));
         });
     };
 
@@ -146,7 +157,8 @@ function map(data) {
     //Prints features attributes
     function printInfo(value) {
         var elem = document.getElementById('info');
-        elem.innerHTML = "Place: " + value.place + " / Depth: " + value.depth + " / Magnitude: " + value.mag + "&nbsp;";
+        elem.innerHTML = "Place: " + value.place + " / Depth: " + value.depth +
+            " / Magnitude: " + value.mag + "&nbsp;";
     }
 
 }
